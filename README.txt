@@ -5,3 +5,4 @@ KELOMPOK 6
 535250126_JasmineMalvina
 535250112_SabrinaClarissaHendra
 535250119_MarchellaYonansyah
+535250120_CherylIvyAnnabelle
