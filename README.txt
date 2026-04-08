@@ -1,0 +1,3 @@
+KELOMPOK 6
+
+535250123_Valencia Chen
