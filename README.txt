@@ -1,1 +1,9 @@
+KELOMPOK 6
+
+535250123_ValenciaChen
 535250124_LivianaWinata
+535250126_Jasmine
+
+
+
+
