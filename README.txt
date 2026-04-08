@@ -4,3 +4,4 @@ KELOMPOK 6
 535250124_LivianaWinata
 535250126_JasmineMalvina
 535250112_SabrinaClarissaHendra
+535250119_MarchellaYonansyah
