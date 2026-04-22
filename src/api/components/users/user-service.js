@@ -1,21 +1,38 @@
-const express = require('express');
+const userRepository = require('./userRepository');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-const usersController = require('./users-controller');
+const register = async (payload) => {
+  const isExist = await userRepository.findByUsername(payload.userName);
+  if (isExist) throw new Error("Username sudah dipakai!");
 
-const route = express.Router();
 
-module.exports = (app) => {
-  app.use('/users', route);
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(payload.password, salt);
 
-  route.get('/', usersController.getUsers);
+  return await userRepository.create({
+    ...payload,
+    password: hashedPassword
+  });
+};
 
-  route.post('/', usersController.createUser);
+const login = async (email, password) => {
+  const user = await userRepository.findByEmail(email);
+  if (!user) throw new Error("User tidak ditemukan");
 
-  route.get('/:id', usersController.getUser);
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Password salah");
 
-  route.put('/:id', usersController.updateUser);
+  const token = jwt.sign(
+    { id: user._id, userName: user.userName },
+    'RAHASIA_NEGARA', 
+    { expiresIn: '1d' }
+  );
 
-  route.put('/:id/change-password', usersController.changePassword);
+  return { user, token };
+};
 
-  route.delete('/:id', usersController.deleteUser);
+module.exports = {
+  register,
+  login
 };
