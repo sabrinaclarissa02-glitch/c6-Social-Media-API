@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const userRepository = require('./user-repository');
 
@@ -9,12 +9,16 @@ const register = async (payload) => {
     throw new Error('name, username, email, and password are required');
   }
 
-  const existingEmail = await userRepository.findUserByEmail(email.toLowerCase());
+  const existingEmail = await userRepository.findUserByEmail(
+    email.toLowerCase()
+  );
   if (existingEmail) {
     throw new Error('Email already registered');
   }
 
-  const existingUsername = await userRepository.findUserByUsername(username.toLowerCase());
+  const existingUsername = await userRepository.findUserByUsername(
+    username.toLowerCase()
+  );
   if (existingUsername) {
     throw new Error('Username already used');
   }
@@ -27,11 +31,11 @@ const register = async (payload) => {
     email: email.toLowerCase(),
     password: hashedPassword,
     age,
-    bio
+    bio,
   });
 
   return {
-    _id: newUser._id,
+    _id: newUser.id,
     name: newUser.name,
     username: newUser.username,
     email: newUser.email,
@@ -61,7 +65,7 @@ const login = async (payload) => {
   }
 
   return {
-    _id: user._id,
+    _id: user.id,
     name: user.name,
     username: user.username,
     email: user.email,
@@ -100,16 +104,19 @@ const loginWithCode = async (payload) => {
     throw new Error('email and code are required');
   }
 
-  const user = await userRepository.findUserByEmailAndCode(email.toLowerCase(), code);
+  const user = await userRepository.findUserByEmailAndCode(
+    email.toLowerCase(),
+    code
+  );
 
   if (!user) {
     throw new Error('Code invalid or expired');
   }
 
-  await userRepository.clearLoginCodeByUserId(user._id);
+  await userRepository.clearLoginCodeByUserId(user.id);
 
   return {
-    _id: user._id,
+    _id: user.id,
     name: user.name,
     username: user.username,
     email: user.email,
@@ -119,9 +126,7 @@ const loginWithCode = async (payload) => {
   };
 };
 
-const getAllUsers = async () => {
-  return await userRepository.findAllUsers();
-};
+const getAllUsers = async () => userRepository.findAllUsers();
 
 const getUserById = async (id) => {
   if (!id) {
@@ -140,7 +145,7 @@ const getUserById = async (id) => {
 
   if (user.isPrivate) {
     return {
-      _id: user._id,
+      _id: user.id,
       name: user.name,
       username: user.username,
       bio: user.bio,
@@ -197,7 +202,7 @@ const updateUser = async (payload) => {
     const existingUsername =
       await userRepository.findUserByUsername(usernameLower);
 
-    if (existingUsername && existingUsername._id.toString() !== id) {
+    if (existingUsername && existingUsername.id.toString() !== id) {
       throw new Error('Username already used');
     }
 
@@ -208,7 +213,7 @@ const updateUser = async (payload) => {
     const emailLower = updateData.email.toLowerCase();
     const existingEmail = await userRepository.findUserByEmail(emailLower);
 
-    if (existingEmail && existingEmail._id.toString() !== id) {
+    if (existingEmail && existingEmail.id.toString() !== id) {
       throw new Error('Email already registered');
     }
 

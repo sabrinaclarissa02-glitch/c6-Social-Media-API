@@ -5,6 +5,7 @@ const userRepository = require('../users/user-repository');
 const extractMentionUsernames = (content) => {
   const matches = content.match(/@([a-zA-Z0-9_]+)/g) || [];
   const usernames = matches.map((item) => item.substring(1).toLowerCase());
+
   return [...new Set(usernames)];
 };
 
@@ -16,7 +17,7 @@ const createPost = async (payload) => {
   }
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
-    throw new Error('Invalid userId');
+    throw new Error('Invalid user id');
   }
 
   if (content.length > 280) {
@@ -24,6 +25,7 @@ const createPost = async (payload) => {
   }
 
   const user = await userRepository.findUserById(userId);
+
   if (!user) {
     throw new Error('User not found');
   }
@@ -39,10 +41,10 @@ const createPost = async (payload) => {
   const newPost = await postRepository.createPost({
     userId,
     content,
-    mentions: mentionedUsers.map((user) => user._id)
+    mentions: mentionedUsers.map((mentionedUser) => mentionedUser.id),
   });
 
-  return await postRepository.findPostById(newPost._id);
+  return postRepository.findPostById(newPost.id);
 };
 
 const updatePost = async (payload) => {
@@ -61,6 +63,7 @@ const updatePost = async (payload) => {
   }
 
   const existingPost = await postRepository.findPostById(id);
+
   if (!existingPost) {
     throw new Error('Post not found');
   }
@@ -69,16 +72,15 @@ const updatePost = async (payload) => {
   let mentionedUsers = [];
 
   if (mentionedUsernames.length > 0) {
-    mentionedUsers = await userRepository.findUsersByUsernames(mentionedUsernames);
+    mentionedUsers =
+      await userRepository.findUsersByUsernames(mentionedUsernames);
   }
 
-  const updatedPost = await postRepository.updatePostById(id, {
+  return postRepository.updatePostById(id, {
     content,
-    mentions: mentionedUsers.map((user) => user._id),
+    mentions: mentionedUsers.map((mentionedUser) => mentionedUser.id),
     isEdited: true,
   });
-
-  return updatedPost;
 };
 
 const deletePost = async (id) => {
