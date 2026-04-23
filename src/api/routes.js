@@ -6,6 +6,7 @@ module.exports = () => {
   const app = express.Router();
 
   users(app);
+  likes(app);
 
   return app;
 };
