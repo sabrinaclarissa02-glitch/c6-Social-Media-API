@@ -1,42 +1,30 @@
-const User = require('./users-schema');
+const User = require('../../../models/users-schema');
 
-const createUser = async (payload) => {
-  return await User.create(payload);
-};
+const createUser = async (payload) => User.create(payload);
 
-const findUserByEmail = async (email) => {
-  return await User.findOne({ email });
-};
+const findUserByEmail = async (email) => User.findOne({ email });
 
-const findUserByUsername = async (username) => {
-  return await User.findOne({ username });
-};
+const findUserByUsername = async (username) => User.findOne({ username });
 
-const findUsersByUsernames = async (usernames) => {
-  return await User.find({ username: { $in: usernames } });
-};
+const findUsersByUsernames = async (usernames) =>
+  User.find({ username: { $in: usernames } });
 
-const findAllUsers = async () => {
-  return await User.find().select('-password -loginCode -loginCodeExpires');
-};
+const findAllUsers = async () =>
+  User.find().select('-password -loginCode -loginCodeExpires');
 
-const findUserById = async (id) => {
-  return await User.findById(id).select('-password -loginCode -loginCodeExpires');
-};
+const findUserById = async (id) =>
+  User.findById(id).select('-password -loginCode -loginCodeExpires');
 
-const updateUserById = async (id, payload) => {
-  return await User.findByIdAndUpdate(id, payload, {
+const updateUserById = async (id, payload) =>
+  User.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   }).select('-password -loginCode -loginCodeExpires');
-};
 
-const deleteUserById = async (id) => {
-  return await User.findByIdAndDelete(id);
-};
+const deleteUserById = async (id) => User.findByIdAndDelete(id);
 
-const saveLoginCode = async (email, code, expiredAt) => {
-  return await User.findOneAndUpdate(
+const saveLoginCode = async (email, code, expiredAt) =>
+  User.findOneAndUpdate(
     { email },
     {
       loginCode: code,
@@ -44,18 +32,16 @@ const saveLoginCode = async (email, code, expiredAt) => {
     },
     { new: true }
   );
-};
 
-const findUserByEmailAndCode = async (email, code) => {
-  return await User.findOne({
+const findUserByEmailAndCode = async (email, code) =>
+  User.findOne({
     email,
     loginCode: code,
     loginCodeExpires: { $gt: new Date() },
   });
-};
 
-const clearLoginCodeByUserId = async (id) => {
-  return await User.findByIdAndUpdate(
+const clearLoginCodeByUserId = async (id) =>
+  User.findByIdAndUpdate(
     id,
     {
       loginCode: null,
@@ -63,10 +49,9 @@ const clearLoginCodeByUserId = async (id) => {
     },
     { new: true }
   );
-};
 
-const updatePrivacyById = async (id, isPrivate) => {
-  return await User.findByIdAndUpdate(
+const updatePrivacyById = async (id, isPrivate) =>
+  User.findByIdAndUpdate(
     id,
     { isPrivate },
     {
@@ -74,7 +59,6 @@ const updatePrivacyById = async (id, isPrivate) => {
       runValidators: true,
     }
   ).select('-password -loginCode -loginCodeExpires');
-};
 
 module.exports = {
   createUser,
