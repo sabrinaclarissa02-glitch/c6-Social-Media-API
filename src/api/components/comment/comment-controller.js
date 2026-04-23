@@ -1,10 +1,9 @@
 const commentService = require('./comment-service');
 
-const createComment = async (req, res) => {
+const createComment = async (req, res, next) => {
   try {
     const { postId } = req.params;
-    const userId = req.user.id;
-    const { content } = req.body;
+    const { userId, content } = req.body; // AMAN: Mengambil data dari JSON Body
 
     const newComment = await commentService.createComment(postId, userId, content);
 
@@ -14,17 +13,14 @@ const createComment = async (req, res) => {
       data: newComment,
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: 'fail',
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-const deleteComment = async (req, res) => {
+const deleteComment = async (req, res, next) => {
   try {
     const { commentId } = req.params;
-    const userId = req.user.id;
+    const { userId } = req.body;
 
     await commentService.deleteComment(commentId, userId);
 
@@ -33,10 +29,7 @@ const deleteComment = async (req, res) => {
       message: 'Komentar berhasil dihapus',
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: 'fail',
-      message: error.message,
-    });
+    next(error);
   }
 };
 
