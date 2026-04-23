@@ -1,25 +1,14 @@
-const User = require('../models/User'); 
+const Follow = require('../../../models/follow-schema'); 
 
-const findByEmail = async (email) => {
-  return await User.findOne({ email });
+const createFollow = async (followerId, followingId) => {
+  return await Follow.create({ followerId, followingId });
 };
 
-const findByUsername = async (userName) => {
-  return await User.findOne({ userName });
+const deleteFollow = async (followerId, followingId) => {
+  return await Follow.findOneAndDelete({ followerId, followingId });
 };
-
-const findById = async (id) => {
-  return await User.findById(id);
-};
-
-const create = async (userData) => {
-  return await User.create(userData);
-};
-
 
 module.exports = {
-  findByEmail,
-  findByUsername,
-  findById,
-  create
+  createFollow,
+  deleteFollow
 };
