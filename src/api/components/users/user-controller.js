@@ -1,163 +1,70 @@
 const userService = require('./user-service');
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
   try {
     const result = await userService.register(req.body);
-
-    res.status(201).json({
-      success: true,
-      message: 'Register success',
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    res.status(201).json({ success: true, message: 'Register success', data: result });
+  } catch (error) { next(error); }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const result = await userService.login(req.body);
-
-    res.status(200).json({
-      success: true,
-      message: 'Login success',
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    res.status(200).json({ success: true, message: 'Login success', data: result });
+  } catch (error) { next(error); }
 };
 
-const requestLoginCode = async (req, res) => {
+const requestLoginCode = async (req, res, next) => {
   try {
-    const { email } = req.body;
-
-    const result = await userService.requestLoginCode(email);
-
-    res.status(200).json({
-      success: true,
-      message: 'Login code generated successfully',
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    const result = await userService.requestLoginCode(req.body.email);
+    res.status(200).json({ success: true, message: 'Login code generated successfully', data: result });
+  } catch (error) { next(error); }
 };
 
-const loginWithCode = async (req, res) => {
+const loginWithCode = async (req, res, next) => {
   try {
-    const { email, code } = req.body;
-
-    const result = await userService.loginWithCode({ email, code });
-
-    res.status(200).json({
-      success: true,
-      message: 'Login with code success',
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    const result = await userService.loginWithCode(req.body);
+    res.status(200).json({ success: true, message: 'Login with code success', data: result });
+  } catch (error) { next(error); }
 };
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
   try {
     const result = await userService.getAllUsers();
-
-    res.status(200).json({
-      success: true,
-      message: 'Get all users success',
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    res.status(200).json({ success: true, message: 'Get all users success', data: result });
+  } catch (error) { next(error); }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
-    const { id } = req.body;
-
+    const id = req.params.id || req.body.id;
     const result = await userService.getUserById(id);
-
-    res.status(200).json({
-      success: true,
-      message: 'Get user success',
-      data: result,
-    });
-  } catch (error) {
-    res.status(404).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    res.status(200).json({ success: true, message: 'Get user success', data: result });
+  } catch (error) { next(error); }
 };
 
-const updatePrivacy = async (req, res) => {
+const updatePrivacy = async (req, res, next) => {
   try {
-    const result = await userService.updatePrivacy(req.body);
-
-    res.status(200).json({
-      success: true,
-      message: 'Privacy updated successfully',
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    const id = req.user?.id || req.body.id || req.params.id;
+    const result = await userService.updatePrivacy({ id, isPrivate: req.body.isPrivate });
+    res.status(200).json({ success: true, message: 'Privacy updated successfully', data: result });
+  } catch (error) { next(error); }
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   try {
-    const result = await userService.updateUser(req.body);
-
-    res.status(200).json({
-      success: true,
-      message: 'Update user success',
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    const id = req.user?.id || req.body.id || req.params.id;
+    const result = await userService.updateUser({ id, ...req.body });
+    res.status(200).json({ success: true, message: 'Update user success', data: result });
+  } catch (error) { next(error); }
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   try {
-    const { id } = req.body;
-
+    const id = req.user?.id || req.body.id || req.params.id;
     const result = await userService.deleteUser(id);
-
-    res.status(200).json({
-      success: true,
-      message: result.message,
-    });
-  } catch (error) {
-    res.status(404).json({
-      success: false,
-      message: error.message,
-    });
-  }
+    res.status(200).json({ success: true, message: result.message });
+  } catch (error) { next(error); }
 };
 
 module.exports = {
