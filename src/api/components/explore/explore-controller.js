@@ -1,24 +1,8 @@
 const exploreService = require('./explore-service');
 
-const getExplorePosts = async (req, res) => {
-  try {
-    const userId = req.user.id;
+const getExplorePosts = async (req, res, next) => { try {
+  const data = await exploreService.getExplorePosts();
+  res.status(200).json({ success: true, data });
+} catch (error) { next(error); } };
 
-    const posts = await exploreService.getExplorePosts(userId);
-
-    res.status(200).json({
-      status: 'success',
-      data: posts,
-    });
-
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: 'fail',
-      message: error.message,
-    });
-  }
-};
-
-module.exports = {
-  getExplorePosts,
-};
+module.exports = { getExplorePosts };

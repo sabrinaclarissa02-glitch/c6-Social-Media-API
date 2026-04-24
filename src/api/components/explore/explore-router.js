@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const exploreController = require('./explore-controller');
+
+const router = express.Router();
 
 router.get('/', exploreController.getExplorePosts);
 
