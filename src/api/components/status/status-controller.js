@@ -1,24 +1,24 @@
 const statusService = require('./status-service');
 
-const getUserStatus = async (req, res) => {
-  try {
-    const { userId } = req.params;
+const getUserStatus = async (req, res, next) => { try {
+  const data = await statusService.getUserStatus(req.params.userId);
+  res.status(200).json({ success: true, data });
+} catch (error) { next(error); } };
 
-    const status = await statusService.getUserStatus(userId);
+const createStatus = async (req, res, next) => { try {
+  const userId = req.user?.id || req.body.userId;
+  const data = await statusService.createStatus({ userId, content: req.body.content, mediaUrl: req.body.mediaUrl });
+  res.status(201).json({ success: true, message: 'Status created successfully', data });
+} catch (error) { next(error); } };
 
-    res.status(200).json({
-      status: 'success',
-      data: status,
-    });
+const getActiveStatusesByUser = async (req, res, next) => { try {
+  const data = await statusService.getActiveStatusesByUser(req.params.userId);
+  res.status(200).json({ success: true, data });
+} catch (error) { next(error); } };
 
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: 'fail',
-      message: error.message,
-    });
-  }
-};
+const getActiveStatuses = async (req, res, next) => { try {
+  const data = await statusService.getActiveStatuses();
+  res.status(200).json({ success: true, data });
+} catch (error) { next(error); } };
 
-module.exports = {
-  getUserStatus,
-};
+module.exports = { getUserStatus, createStatus, getActiveStatusesByUser, getActiveStatuses };
