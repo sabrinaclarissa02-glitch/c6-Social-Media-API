@@ -1,66 +1,24 @@
-const saveService = require('./saveService');
+const saveService = require('./save-service');
 
-const savePost = async (req, res) => {
+const savePost = async (req, res, next) => {
   try {
-    const { postId } = req.params;
-    const userId = req.user.id;
-
-    await saveService.savePost(userId, postId);
-
-    res.status(201).json({
-      status: "success",
-      message: "Post berhasil disimpan"
-    });
-
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: "fail",
-      message: error.message
-    });
-  }
+    const data = await saveService.savePost(req.user.id, req.params.postId);
+    res.status(201).json({ success: true, message: 'Post berhasil disimpan', data });
+  } catch (error) { next(error); }
 };
 
-const unsavePost = async (req, res) => {
+const unsavePost = async (req, res, next) => {
   try {
-    const { postId } = req.params;
-    const userId = req.user.id;
-
-    await saveService.unsavePost(userId, postId);
-
-    res.status(200).json({
-      status: "success",
-      message: "Post berhasil dihapus dari simpanan"
-    });
-
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: "fail",
-      message: error.message
-    });
-  }
+    const data = await saveService.unsavePost(req.user.id, req.params.postId);
+    res.status(200).json({ success: true, message: 'Post berhasil dihapus dari simpanan', data });
+  } catch (error) { next(error); }
 };
 
-const getSavedPosts = async (req, res) => {
+const getSavedPosts = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-
-    const savedPosts = await saveService.getSavedPosts(userId);
-
-    res.status(200).json({
-      status: "success",
-      data: savedPosts
-    });
-
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: "fail",
-      message: error.message
-    });
-  }
+    const data = await saveService.getSavedPosts(req.user.id);
+    res.status(200).json({ success: true, data });
+  } catch (error) { next(error); }
 };
 
-module.exports = {
-  savePost,
-  unsavePost,
-  getSavedPosts
-};
+module.exports = { savePost, unsavePost, getSavedPosts };
