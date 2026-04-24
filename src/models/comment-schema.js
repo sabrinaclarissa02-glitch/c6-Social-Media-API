@@ -5,12 +5,12 @@ module.exports = (db) =>
       {
         postId: {
           type: db.Schema.Types.ObjectId,
-          ref: 'Post', // Ubah dari 'Posts' menjadi 'Post'
+          ref: 'Post',
           required: true,
         },
         userId: {
           type: db.Schema.Types.ObjectId,
-          ref: 'User', // Ubah dari 'Users' menjadi 'User'
+          ref: 'User',
           required: true,
         },
         content: {

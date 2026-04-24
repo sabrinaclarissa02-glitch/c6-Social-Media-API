@@ -1,11 +1,7 @@
-const { Comments } = require('../../../models');
+const Comment = require('../../../models/comment-schema');
 
-const createComment = async (postId, userId, content) => {
-  return await Comments.create({ postId, userId, content });
-};
+const createComment = async (postId, userId, content) => Comment.create({ postId, userId, content });
 
-const deleteComment = async (commentId, userId) => {
-  return await Comments.deleteOne({ _id: commentId, userId });
-};
+const deleteComment = async (commentId, userId) => Comment.deleteOne({ _id: commentId, userId });
 
 module.exports = { createComment, deleteComment };
