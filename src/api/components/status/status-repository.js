@@ -7,12 +7,12 @@ const getUserStats = async (userId) => {
   );
 
   const [followers] = await db.execute(
-    SELECT COUNT(*) as totalFollowers FROM follows WHERE following_id = ?,
+    "SELECT COUNT(*) as totalFollowers FROM follows WHERE following_id = ?",
     [userId]
   );
 
   const [following] = await db.execute(
-    SELECT COUNT(*) as totalFollowing FROM follows WHERE follower_id = ?,
+    "SELECT COUNT(*) as totalFollowing FROM follows WHERE follower_id = ?",
     [userId]
   );
 
