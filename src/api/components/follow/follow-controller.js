@@ -3,7 +3,7 @@ const followService = require('./follow-service');
 const followUser = async (req, res, next) => {
   try {
     const { followingId } = req.params;
-    const { followerId } = req.body; // AMAN: Mengambil ID dari JSON Body
+    const { followerId } = req.body;
 
     await followService.followUser(followerId, followingId);
 
@@ -12,7 +12,7 @@ const followUser = async (req, res, next) => {
       message: 'Berhasil mem-follow user',
     });
   } catch (error) {
-    next(error); // Melempar ke error-middleware kelompokmu
+    next(error); 
   }
 };
 

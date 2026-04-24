@@ -3,7 +3,7 @@ const commentService = require('./comment-service');
 const createComment = async (req, res, next) => {
   try {
     const { postId } = req.params;
-    const { userId, content } = req.body; // AMAN: Mengambil data dari JSON Body
+    const { userId, content } = req.body; 
 
     const newComment = await commentService.createComment(postId, userId, content);
 
