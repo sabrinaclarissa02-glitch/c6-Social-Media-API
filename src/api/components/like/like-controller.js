@@ -1,71 +1,18 @@
-const likeService = require('./likeService');
+const likeService = require('./like-service');
 
-const likePost = async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const userId = req.user.id; 
+const likePost = async (req, res, next) => { try {
+  await likeService.likePost(req.user.id, req.params.postId);
+  res.status(201).json({ success: true, message: 'Post berhasil disukai' });
+} catch (error) { next(error); } };
 
-    await likeService.likePost(userId, postId);
+const unlikePost = async (req, res, next) => { try {
+  await likeService.unlikePost(req.user.id, req.params.postId);
+  res.status(200).json({ success: true, message: 'Like berhasil dihapus' });
+} catch (error) { next(error); } };
 
-    res.status(201).json({
-      status: "success",
-      message: "Post berhasil disukai"
-    });
+const getLikeCount = async (req, res, next) => { try {
+  const likeCount = await likeService.getLikeCount(req.params.postId);
+  res.status(200).json({ success: true, data: { postId: req.params.postId, likeCount } });
+} catch (error) { next(error); } };
 
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: "fail",
-      message: error.message
-    });
-  }
-};
-
-
-const unlikePost = async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const userId = req.user.id;
-
-    await likeService.unlikePost(userId, postId);
-
-    res.status(200).json({
-      status: "success",
-      message: "Like berhasil dihapus"
-    });
-
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: "fail",
-      message: error.message
-    });
-  }
-};
-
-
-const getLikeCount = async (req, res) => {
-  try {
-    const { postId } = req.params;
-
-    const likeCount = await likeService.getLikeCount(postId);
-
-    res.status(200).json({
-      status: "success",
-      data: {
-        postId,
-        likeCount
-      }
-    });
-
-  } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: "fail",
-      message: error.message
-    });
-  }
-};
-
-module.exports = {
-  likePost,
-  unlikePost,
-  getLikeCount
-};
+module.exports = { likePost, unlikePost, getLikeCount };

@@ -1,14 +1,11 @@
 const express = require('express');
+const likeController = require('./like-controller');
+const authMiddleware = require('../../../middlewares/auth-middleware');
+
 const router = express.Router();
-const likeController = require('./likeController');
 
-// Like post
-router.post('/:postId/like', likeController.likePost);
-
-// Unlike post
-router.delete('/:postId/unlike', likeController.unlikePost);
-
-// Get jumlah like
+router.post('/:postId/like', authMiddleware, likeController.likePost);
+router.post('/:postId/unlike', authMiddleware, likeController.unlikePost);
 router.get('/:postId/likes', likeController.getLikeCount);
 
 module.exports = router;
