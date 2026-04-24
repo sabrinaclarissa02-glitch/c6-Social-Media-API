@@ -1,25 +1,13 @@
-module.exports = (db) => {
-  const schema = new db.Schema(
-    {
-      userId: {
-        type: db.Schema.Types.ObjectId,
-        ref: 'Users',
-        required: true
-      },
-      postId: {
-        type: db.Schema.Types.ObjectId,
-        ref: 'Posts',
-        required: true
-      }
-    },
-    {
-      timestamps: true
-    }
-  );
+const mongoose = require('mongoose');
 
-  schema.index({ userId: 1, postId: 1 }, { unique: true });
+const repostSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: true },
+  },
+  { timestamps: true }
+);
 
-  schema.index({ postId: 1 });
+repostSchema.index({ userId: 1, postId: 1 }, { unique: true });
 
-  return db.model('Repost', schema);
-};
+module.exports = mongoose.models.Repost || mongoose.model('Repost', repostSchema);

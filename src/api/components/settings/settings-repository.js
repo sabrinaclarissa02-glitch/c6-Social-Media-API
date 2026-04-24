@@ -1,18 +1,11 @@
-const mongoose = require('mongoose');
-
-const createSettingsModel = require('../../../models/settings-schema');
-
-const Settings =
-  mongoose.models.Settings || createSettingsModel(mongoose);
-
+const Settings = require('../../../models/settings-schema');
 const { errorTypes, errorResponder } = require('../../../core/errors');
+
+const userProjection = 'name username email';
 
 const getByUserId = async (userId) => {
   try {
-    return await Settings.findOne({ userId }).populate(
-      'blockedUsers',
-      'userName displayName email profilePicture'
-    );
+    return await Settings.findOne({ userId }).populate('blockedUsers', userProjection);
   } catch (error) {
     throw errorResponder(errorTypes.DB_ERROR, error.message);
   }
@@ -20,10 +13,7 @@ const getByUserId = async (userId) => {
 
 const createDefault = async (userId) => {
   try {
-    return await Settings.create({
-      userId,
-      blockedUsers: [],
-    });
+    return await Settings.create({ userId, blockedUsers: [] });
   } catch (error) {
     throw errorResponder(errorTypes.DB_ERROR, error.message);
   }
@@ -34,12 +24,8 @@ const updateSettings = async (userId, payload) => {
     return await Settings.findOneAndUpdate(
       { userId },
       payload,
-      {
-        new: true,
-        upsert: true,
-        setDefaultsOnInsert: true,
-      }
-    ).populate('blockedUsers', 'userName displayName email profilePicture');
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    ).populate('blockedUsers', userProjection);
   } catch (error) {
     throw errorResponder(errorTypes.DB_ERROR, error.message);
   }
@@ -50,12 +36,8 @@ const addBlockedUser = async (userId, blockedUserId) => {
     return await Settings.findOneAndUpdate(
       { userId },
       { $addToSet: { blockedUsers: blockedUserId } },
-      {
-        new: true,
-        upsert: true,
-        setDefaultsOnInsert: true,
-      }
-    ).populate('blockedUsers', 'userName displayName email profilePicture');
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    ).populate('blockedUsers', userProjection);
   } catch (error) {
     throw errorResponder(errorTypes.DB_ERROR, error.message);
   }
@@ -67,7 +49,7 @@ const removeBlockedUser = async (userId, blockedUserId) => {
       { userId },
       { $pull: { blockedUsers: blockedUserId } },
       { new: true }
-    ).populate('blockedUsers', 'userName displayName email profilePicture');
+    ).populate('blockedUsers', userProjection);
   } catch (error) {
     throw errorResponder(errorTypes.DB_ERROR, error.message);
   }

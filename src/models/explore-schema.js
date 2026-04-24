@@ -1,34 +1,14 @@
-module.exports = (db) =>
-  db.model(
-    'Explore',
-    new db.Schema(
-      {
-        postId: {
-          type: db.Schema.Types.ObjectId,
-          ref: 'Post',
-          required: true,
-        },
-        userId: {
-          type: db.Schema.Types.ObjectId,
-          ref: 'User',
-          required: true,
-        },
-        score: {
-          type: Number,
-          default: 0, // untuk ranking (likes, views, dll)
-        },
-        tags: [
-          {
-            type: String,
-            trim: true,
-          },
-        ],
-        isTrending: {
-          type: Boolean,
-          default: false,
-        },
-      },
-      { timestamps: true }
-    )
-  );
-  
+const mongoose = require('mongoose');
+
+const exploreSchema = new mongoose.Schema(
+  {
+    postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    score: { type: Number, default: 0 },
+    tags: [{ type: String, trim: true }],
+    isTrending: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.models.Explore || mongoose.model('Explore', exploreSchema);

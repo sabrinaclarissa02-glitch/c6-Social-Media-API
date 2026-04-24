@@ -1,24 +1,13 @@
-module.exports = (db) =>
-  db.model(
-    'Comment',
-    new db.Schema(
-      {
-        postId: {
-          type: db.Schema.Types.ObjectId,
-          ref: 'Post',
-          required: true,
-        },
-        userId: {
-          type: db.Schema.Types.ObjectId,
-          ref: 'User',
-          required: true,
-        },
-        content: {
-          type: String,
-          required: true,
-          maxlength: 500,
-        },
-      },
-      { timestamps: true }
-    )
-  );
+const mongoose = require('mongoose');
+
+const dmConversationSchema = new mongoose.Schema(
+  {
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
+    lastMessage: { type: String, default: '', trim: true },
+    lastMessageAt: { type: Date, default: Date.now },
+    archivedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.models.DmConversation || mongoose.model('DmConversation', dmConversationSchema);

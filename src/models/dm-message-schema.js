@@ -1,37 +1,15 @@
-module.exports = (db) =>
-  db.model(
-    'DmMessage',
-    new db.Schema(
-      {
-        conversationId: {
-          type: db.Schema.Types.ObjectId,
-          ref: 'DmConversation',
-          required: true,
-        },
-        senderId: {
-          type: db.Schema.Types.ObjectId,
-          ref: 'Users',
-          required: true,
-        },
-        receiverId: {
-          type: db.Schema.Types.ObjectId,
-          ref: 'Users',
-          required: true,
-        },
-        text: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        isRead: {
-          type: Boolean,
-          default: false,
-        },
-        readAt: {
-          type: Date,
-          default: null,
-        },
-      },
-      { timestamps: true }
-    )
-  );
+const mongoose = require('mongoose');
+
+const dmMessageSchema = new mongoose.Schema(
+  {
+    conversationId: { type: mongoose.Schema.Types.ObjectId, ref: 'DmConversation', required: true },
+    senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    text: { type: String, required: true, trim: true },
+    isRead: { type: Boolean, default: false },
+    readAt: { type: Date, default: null },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.models.DmMessage || mongoose.model('DmMessage', dmMessageSchema);
