@@ -1,31 +1,9 @@
-const db = require('../config/database');
+const Save = require('../../../models/save-schema');
 
-const createSave = async (userId, postId) => {
-  const query = `
-    INSERT INTO saves (user_id, post_id)
-    VALUES (?, ?)
-  `;
-  return db.query(query, [userId, postId]);
-};
+const findOneSave = async (userId, postId) => Save.findOne({ userId, postId });
+const createSave = async (userId, postId) => Save.create({ userId, postId });
+const deleteSave = async (userId, postId) => Save.findOneAndDelete({ userId, postId });
+const findSavedPosts = async (userId) =>
+  Save.find({ userId }).populate({ path: 'postId', populate: { path: 'userId', select: 'name username email' } }).sort({ createdAt: -1 });
 
-const deleteSave = async (userId, postId) => {
-  const query = `
-    DELETE FROM saves
-    WHERE user_id = ? AND post_id = ?
-  `;
-  return db.query(query, [userId, postId]);
-};
-
-const findSavedPosts = async (userId) => {
-  const query = `
-    SELECT * FROM saves
-    WHERE user_id = ?
-  `;
-  return db.query(query, [userId]);
-};
-
-module.exports = {
-  createSave,
-  deleteSave,
-  findSavedPosts
-};
+module.exports = { findOneSave, createSave, deleteSave, findSavedPosts };
