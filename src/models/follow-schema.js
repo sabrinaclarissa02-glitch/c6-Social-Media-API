@@ -5,12 +5,12 @@ module.exports = (db) =>
       {
         followerId: {
           type: db.Schema.Types.ObjectId,
-          ref: 'Users',
+          ref: 'User',
           required: true,
         },
         followingId: {
           type: db.Schema.Types.ObjectId,
-          ref: 'Users',
+          ref: 'User', 
           required: true,
         },
       },

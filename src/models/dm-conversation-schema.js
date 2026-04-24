@@ -1,30 +1,23 @@
 module.exports = (db) =>
   db.model(
-    'DmConversation',
+    'Comment',
     new db.Schema(
       {
-        members: [
-          {
-            type: db.Schema.Types.ObjectId,
-            ref: 'Users',
-            required: true,
-          },
-        ],
-        lastMessage: {
+        postId: {
+          type: db.Schema.Types.ObjectId,
+          ref: 'Post',
+          required: true,
+        },
+        userId: {
+          type: db.Schema.Types.ObjectId,
+          ref: 'User',
+          required: true,
+        },
+        content: {
           type: String,
-          default: '',
-          trim: true,
+          required: true,
+          maxlength: 500,
         },
-        lastMessageAt: {
-          type: Date,
-          default: Date.now,
-        },
-        archivedBy: [
-          {
-            type: db.Schema.Types.ObjectId,
-            ref: 'Users',
-          },
-        ],
       },
       { timestamps: true }
     )

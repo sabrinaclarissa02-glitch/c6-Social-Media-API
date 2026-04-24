@@ -1,9 +1,9 @@
 const followService = require('./follow-service');
 
-const followUser = async (req, res) => {
+const followUser = async (req, res, next) => {
   try {
     const { followingId } = req.params;
-    const followerId = req.user.id; 
+    const { followerId } = req.body;
 
     await followService.followUser(followerId, followingId);
 
@@ -12,17 +12,14 @@ const followUser = async (req, res) => {
       message: 'Berhasil mem-follow user',
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: 'fail',
-      message: error.message,
-    });
+    next(error); 
   }
 };
 
-const unfollowUser = async (req, res) => {
+const unfollowUser = async (req, res, next) => {
   try {
     const { followingId } = req.params;
-    const followerId = req.user.id;
+    const { followerId } = req.body;
 
     await followService.unfollowUser(followerId, followingId);
 
@@ -31,10 +28,7 @@ const unfollowUser = async (req, res) => {
       message: 'Berhasil unfollow user',
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      status: 'fail',
-      message: error.message,
-    });
+    next(error);
   }
 };
 
