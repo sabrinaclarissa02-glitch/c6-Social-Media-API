@@ -1,4 +1,4 @@
-const repostRepository = require('./repost-repository');
+const repostRepository = require('./repostRepository');
 
 const repostPost = async (userId, postId) => {
     const existingRepost = await repostRepository.findRepost(userId, postId);
